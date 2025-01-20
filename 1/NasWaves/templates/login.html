@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Yap</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <h2>Giriş Yap</h2>
+            <form action="{{ url_for('login') }}" method="POST">
+                <div class="textbox">
+                    <input type="text" placeholder="Kullanıcı Adı" name="username" required>
+                </div>
+                <div class="textbox">
+                    <input type="password" placeholder="Şifre" name="password" required>
+                </div>
+                <input type="submit" value="Giriş Yap">
+            </form>
+        </div>
+    </div>
+
+    <!-- Hata Popup Modal -->
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <p id="errorMessage">Kullanıcı adı veya şifre yanlış!</p>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul id="flashMessages">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <script>
+        $(document).ready(function() {
+            {% if 'danger' in get_flashed_messages() %}
+                // Eğer hata mesajı varsa, modal'ı göster
+                $('#errorModal').fadeIn();
+            {% endif %}
+
+            // Modal'ı kapatmak için x işaretine tıklama
+            $('.close-btn').click(function() {
+                $('#errorModal').fadeOut();
+            });
+
+            // Modal dışına tıklanarak modal kapatılabilir
+            $(window).click(function(event) {
+                if ($(event.target).is('#errorModal')) {
+                    $('#errorModal').fadeOut();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
